@@ -73,7 +73,3 @@ for key in cards:
     card_sum += cards[key]
 
 print('Total cards: {a}'.format(a = card_sum))
-#print('Total points: {a}'.format(a = total_points))
-#print(docs)
-#print(type(docs[1]))
-#print(type(docs[0][0]))
