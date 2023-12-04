@@ -12,7 +12,7 @@ docs = open("input.txt", 'r').read()
 docs = docs.split('\n')
 
 
-for i in range(len(docs)):
+for i in range(len(docs)): #convert input into lists for iterating
     docs[i] = docs[i].split('|')
     docs[i][0] = docs[i][0].split(':')[1]
     
@@ -25,7 +25,7 @@ card_points = 0
 total_points = 0
 
 for row in docs:
-    for char in row[0]:
+    for char in row[0]: #List entry numbers as integers
         if char.isdigit():
             entry_str += char
             
@@ -33,7 +33,7 @@ for row in docs:
             entry_nums.append(int(entry_str))
             entry_str = ''
             
-    for char in row[1]:
+    for char in row[1]: #List winning numbers as integers
         if char.isdigit():
             winning_str += char
             
@@ -46,7 +46,9 @@ for row in docs:
         winning_str = ''
             
     
-    for number in entry_nums:
+    
+    
+    for number in entry_nums: #Comparison between entry and winning numbers. Add points
         if number in winning_nums:
             if card_points == 0:
                 card_points = 1
@@ -55,18 +57,12 @@ for row in docs:
     
     total_points += card_points
     
-    
-    print(card_points)
+
     card_points = 0
-    print(entry_nums)
     entry_nums = []
-    print(winning_nums)
     winning_nums = []
 
 
 
 
 print('Total points: {a}'.format(a = total_points))
-#print(docs)
-#print(type(docs[1]))
-#print(type(docs[0][0]))

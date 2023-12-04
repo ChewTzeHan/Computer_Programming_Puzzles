@@ -12,7 +12,7 @@ docs = open("input.txt", 'r').read()
 docs = docs.split('\n')
 
 
-for i in range(len(docs)):
+for i in range(len(docs)): #convert input into lists for iterating
     docs[i] = docs[i].split('|')
     docs[i][0] = docs[i][0].split(':')[1]
     
@@ -24,15 +24,16 @@ winning_str = ''
 
 cards = {}
 
-for i in range(len(docs)):
+
+for i in range(len(docs)): #Create dictionary to hold key as card index, value as no. of cards
     cards[i + 1] = 1
 
-print(cards)
+
 
 
 
 for index, row in enumerate(docs):
-    for char in row[0]:
+    for char in row[0]: #List entry numbers as integers
         if char.isdigit():
             entry_str += char
             
@@ -40,7 +41,7 @@ for index, row in enumerate(docs):
             entry_nums.append(int(entry_str))
             entry_str = ''
             
-    for char in row[1]:
+    for char in row[1]: #List winning numbers as integers
         if char.isdigit():
             winning_str += char
             
@@ -52,33 +53,25 @@ for index, row in enumerate(docs):
         winning_nums.append(int(winning_str))
         winning_str = ''
             
-        
-    print('Card number is: {a}'.format(a = index + 1))
             
         
     count = 1
-    for number in entry_nums:
+    for number in entry_nums: #Add copies of cards from wins
         if number in winning_nums:
             card_key = index + 1 + count
             cards[card_key] = cards[card_key] + cards[index + 1]
             count += 1
             
     
-
-    print(entry_nums)
     entry_nums = []
-    print(winning_nums)
     winning_nums = []
 
-
-    print('---------')
 
 
 card_sum = 0
 for key in cards:
     card_sum += cards[key]
 
-print(cards)
 print('Total cards: {a}'.format(a = card_sum))
 #print('Total points: {a}'.format(a = total_points))
 #print(docs)
