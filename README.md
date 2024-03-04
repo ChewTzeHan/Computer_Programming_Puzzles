@@ -5,3 +5,5 @@ A collection of various programs used as solutions to yearly Advent Of Code even
 Generally involving transformation of an input into an output using various programmming tools.
 
 Done in python.
+
+AoC Link: https://adventofcode.com/
