@@ -1,5 +1,5 @@
 import re
-import numpy as np
+#import numpy as np
 
 
 docs = open("input.txt", 'r').read()
@@ -12,7 +12,6 @@ Labels:
     seed to soil
     soil to fertilizer
     fertilizer to water
-    water to light
     light to temperature
     temperature to humidity
     humidity to location (output)
@@ -31,6 +30,35 @@ def seperate_map(curr_map):
         new_map.append(curr_map[x:x+3])
     return new_map
 
+def split_ranges(pair, ranges):  # will split ranges based on changes in ranges
+    splits = []
+    s, e = pair
+    #old + length = source_end
+    #new + length = destination_end
+    #old = source_start
+    #new = destination_start
+    for new, old, length in ranges:
+        if old <= s <= old + length and old <= e <= old + length: #s and e between source start and end
+            splits.append((new + s - old, new + e - old))
+        elif old <= s <= old + length: #only start in range of source
+            end = old + length #destination end
+            splits.append((new + s - old, new + end - old))
+            s = end - 1
+        elif old <= e <= old + length: #only end in range of source
+            start = old #source start
+            splits.append((new + start - old, new + e - old))
+            e = start + 1
+        elif s <= old <= e and s <= old + length <= e: #source in start and end range
+            splits.append((new, new + length))
+
+    if not splits:
+        return [pair]
+
+    if pair != (s, e):
+        splits.append((s, e))
+
+    return splits
+
 
 for i in range(len(docs)): #filter to only numerical values
     docs[i] = remove_noise(docs[i])
@@ -47,39 +75,32 @@ for i in range(0, len(seeds), 2):
     x = i
     new_seeds.append(seeds[x:x+2])
     
-print(new_seeds)
-seeds = []
-for i in new_seeds:
-    start_seed = int(i[0])
-    end_seed = start_seed + int(i[1])
+seeds = new_seeds
+
+for i in range(len(seeds)):
+    for x in range(len(seeds[i])):
+        seeds[i][x] = int(seeds[i][x])
+
+for i in range(len(maps)):
+    for x in range(len(maps[i])):
+        for y in range(len(maps[i][x])):
+            maps[i][x][y] = int(maps[i][x][y])
     
-    seed_pack = np.arange(start_seed, end_seed)
-    seeds.append(seed_pack)
+
+
+pairs = []
+for start, ranges in seeds:
+    pairs.append((start, start + ranges - 1))
+
+
+for ranges in maps:
+    newpairs = []
+    for pair in pairs:
+        newpairs += split_ranges(pair, ranges)
+    pairs = newpairs
     
-print(len(seeds))
+pairs_sorted = sorted(pairs)
 
-locations = []
-
-#Calculation of seed to location
-
-for seed_pack in seeds: #iterate seeds
-    for seed in seed_pack:
-        seed = int(seed)
-        for current_map in maps: #iterate each map
-            for mapping in current_map:
-                start_source = int(mapping[1])
-                end_source = start_source + int(mapping[2])
-                
-                if seed >= start_source and seed <= end_source:
-                    source_diff = seed - start_source
-                    destination = int(mapping[0]) + source_diff
-                    seed = destination
-                    break
-          
-        locations.append(seed)
-
-#print(locations)
-#print(seeds)
-print('Lowest location corresponding to a seed is:{a}'.format(a = locations[np.argmin(locations)]))
+print('Lowset location number is:{a}'.format(a = pairs_sorted[0][0]))
 
 
